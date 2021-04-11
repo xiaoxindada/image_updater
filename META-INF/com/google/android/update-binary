@@ -72,7 +72,7 @@ for partition in $partition_name ;do
     if [ -e "$tmpdir/$partition.img" ];then
       ui_print "$partition.img: $($BB du -sh $tmpdir/$partition.img | $BB awk '{print $1}')";
       $e2fsck -f -y $tmpdir/$partition.img > $logdir/e2fsck.log;
-      [ $? != "0" ] && abort "$partition.img e2fsck failed!";
+      [ $? != "0" ] && ui_print "$partition.img e2fsck failed!";
     fi;
 
     if [ -e /dev/block/bootdevice/by-name/$partition$slot ];then
