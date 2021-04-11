@@ -50,7 +50,7 @@ ui_print "通用 image 更新器 By: xiaoxindada";
 ui_print "适用设备 A-only, AB, Dynamic";
 ui_print "支持动态分区机型卡刷 system,vendor,system_ext,product,odm 分区";
 ui_print "请确保 image 为 raw.img";
-ui_print "如果img过大你也可以压缩成.gz 在放入"；
+ui_print "如果img过大你也可以压缩成.gz 在放入";
 
 ui_print "正在释放卡刷包内部文件...";
 $unzip -o "$ZIP" > $logdir/zip.log;
@@ -60,19 +60,20 @@ if ! ($BB ls $tmpdir | $BB grep -q -E ".img");then
   abort "image file not found!";
 fi;
 
+[ ! -f $e2fsck ] && abort "e2fsck not found!";
+
 partition_name="system system_ext product vendor odm";
 for partition in $partition_name ;do
   for slot in "" $slot ;do
     if [ -e $tmpdir/$partition.img.gz ];then
       ui_print "正在解压 $partition.img.gz...";
       $BB gunzip -cf "$tmpdir/$partition.img.gz" > "$tmpdir/$partition.img"
-      [ $? != "0" ] && abort "gunzip failed!"
+      [ $? != "0" ] && abort "gunzip failed!";
     fi;
 
     if [ -e "$tmpdir/$partition.img" ];then
       ui_print "$partition.img: $($BB du -sh $tmpdir/$partition.img | $BB awk '{print $1}')";
       $e2fsck -f -y $tmpdir/$partition.img > $logdir/e2fsck.log;
-      [ $? != "0" ] && ui_print "$partition.img e2fsck failed!";
     fi;
 
     if [ -e /dev/block/bootdevice/by-name/$partition$slot ];then
