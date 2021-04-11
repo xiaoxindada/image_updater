@@ -48,7 +48,7 @@ find_slot
 ui_print "";
 ui_print "通用 image 更新器 By: xiaoxindada";
 ui_print "适用设备 A-only, AB, Dynamic";
-ui_print "支持动态分区机型卡刷 system,vendor,system_ext,product 分区";
+ui_print "支持动态分区机型卡刷 system,vendor,system_ext,product,odm 分区";
 ui_print "请确保 image 为 raw.img";
 ui_print "如果img过大你也可以压缩成.gz 在放入"；
 
