@@ -56,6 +56,10 @@ ui_print "正在释放卡刷包内部文件...";
 $unzip -o "$ZIP" > $logdir/zip.log;
 [ $? != "0" ] && abort "unzip failed!";
 
+if ! ($BB ls $tmpdir | $BB grep -q -E ".img");then
+  abort "image file not found!";
+fi;
+
 partition_name="system system_ext product vendor odm";
 for partition in $partition_name ;do
   for slot in "" $slot ;do
