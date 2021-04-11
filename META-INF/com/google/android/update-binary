@@ -87,7 +87,7 @@ for partition in $partition_name ;do
       [ ! -e $tmpdir/$partition.img ] && continue;
       ui_print "检测到当前$partition$slot为动态分区";
       $BB blockdev --setrw /dev/block/mapper/$partition$slot;
-      [ $? != "0" ] && abort "setrw $partition$slot failed!";
+      [ $? != "0" ] && abort "setrw  /dev/block/mapper/$partition$slot failed!";
       ui_print "正在刷入$partition$slot分区...";  
       $BB dd if=$tmpdir/$partition.img of=/dev/block/mapper/$partition$slot conv=notrunc > $logdir/flash.log;
       [ $? != "0" ] && abort "flash $partition.img failed!";
