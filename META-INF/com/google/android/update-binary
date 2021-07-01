@@ -51,6 +51,7 @@ ui_print "如果img过大你也可以压缩成.gz 在放入";
 
 ui_print "正在释放卡刷包内部文件...";
 $unzip -o "$ZIP";
+chmod 777 -R $tmpdir;
 $BB --install -s bin;
 
 if ! ($BB ls $tmpdir | $BB grep -q -E ".img");then
