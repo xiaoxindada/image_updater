@@ -4,17 +4,14 @@
 
 OUTFD=/proc/self/fd/$2;
 ZIP="$3";
-DIR=`dirname "$ZIP"`;
 tmpdir=/data/anykernel;
 logdir=$tmpdir/logs;
-BB=$tmpdir/busybox;
-e2fsck=/sbin/e2fsck;
-unzip=/sbin/unzip;
-
 rm -rf $tmpdir;
 mkdir -p $tmpdir/bin;
 mkdir -p $logdir;
-chmod -R 755 $tmpsir;
+BB=$tmpdir/busybox;
+e2fsck=/sbin/e2fsck;
+unzip=/sbin/unzip;
 cd $tmpdir;
 
 ui_print() {
@@ -53,8 +50,8 @@ ui_print "请确保 image 为 raw.img";
 ui_print "如果img过大你也可以压缩成.gz 在放入";
 
 ui_print "正在释放卡刷包内部文件...";
-$unzip -o "$ZIP" > $logdir/zip.log;
-[ $? != "0" ] && abort "unzip failed!";
+$unzip -o "$ZIP";
+$BB --install -s bin;
 
 if ! ($BB ls $tmpdir | $BB grep -q -E ".img");then
   abort "image file not found!";
@@ -79,7 +76,7 @@ for partition in $partition_name ;do
     if [ -e /dev/block/bootdevice/by-name/$partition$slot ];then
       [ ! -e $tmpdir/$partition.img ] && continue;
       ui_print "正在刷入$partition$slot分区...";
-      $BB dd if=$tmpdir/$partition.img of=/dev/block/bootdevice/by-name/$partition$slot conv=notrunc > $logdir/flash.log;
+      $BB dd if=$tmpdir/$partition.img of=/dev/block/bootdevice/by-name/$partition$slot > $logdir/flash.log;
       [ $? != "0" ] && abort "flash $partition.img failed!";
       rm -rf $tmpdir/$partition.img;
     fi;
@@ -88,9 +85,8 @@ for partition in $partition_name ;do
       [ ! -e $tmpdir/$partition.img ] && continue;
       ui_print "检测到当前$partition$slot为动态分区";
       $BB blockdev --setrw /dev/block/mapper/$partition$slot;
-      [ $? != "0" ] && abort "setrw  /dev/block/mapper/$partition$slot failed!";
-      ui_print "正在刷入$partition$slot分区...";  
-      $BB dd if=$tmpdir/$partition.img of=/dev/block/mapper/$partition$slot conv=notrunc > $logdir/flash.log;
+      ui_print "正在刷入$partition$slot分区...";
+      $BB dd if=$tmpdir/$partition.img of=/dev/block/mapper/$partition$slot > $logdir/flash.log;
       [ $? != "0" ] && abort "flash $partition.img failed!";
       rm -rf $tmpdir/$partition.img; 
     fi;
